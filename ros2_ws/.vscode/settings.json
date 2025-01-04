@@ -1,0 +1,8 @@
+{
+    "cmake.ignoreCMakeListsMissing": true,
+    "python.analysis.extraPaths": [
+        "/home/predator/robotics-and-ros-2-learn-by-doing-manipulators/ros2_ws/install/arduinobot_py_examples/lib/python3.10/site-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ]
+}

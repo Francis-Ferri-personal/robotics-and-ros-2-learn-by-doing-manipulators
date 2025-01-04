@@ -4,6 +4,16 @@
     <xacro:property name="effort" value="30.0" />
     <xacro:property name="velocity" value="10.0" />
 
+    <xacro:macro name="default_inertial" params="mass">
+        <inertial>
+            <mass value="${mass}" />
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0"
+                iyy="1.0" iyz="0.0"
+                izz="1.0"
+            />
+        </inertial>
+    </xacro:macro>
+
     <link name="world" />
 
     <link name="base_link">
@@ -14,6 +24,14 @@
                     scale="0.01 0.01 0.01" />
             </geometry>
         </visual>
+        <collision>
+            <origin xyz="-0.5 -0.5 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://arduinobot_description/meshes/basement.STL"
+                    scale="0.01 0.01 0.01" />
+            </geometry>
+        </collision>
+        <xacro:default_inertial mass="1.0" />
     </link>
 
     <link name="base_plate_link">
@@ -24,6 +42,14 @@
                     scale="0.01 0.01 0.01" />
             </geometry>
         </visual>
+        <collision>
+            <origin xyz="-0.39 -0.39 -0.56" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://arduinobot_description/meshes/base_plate.STL"
+                    scale="0.01 0.01 0.01" />
+            </geometry>
+        </collision>
+        <xacro:default_inertial mass="0.1" />
     </link>
 
     <link name="forward_drive_arm_link">
@@ -35,7 +61,15 @@
             </geometry>
             <origin xyz="0.19 0.06 0.08" rpy="0 ${-pi / 2.0} ${pi / 2.0}" />
         </visual>
-
+        <collision>
+            <geometry>
+                <mesh filename="package://arduinobot_description/meshes/forward_drive_arm.STL"
+                    scale="0.01 0.01 0.01"
+                />
+            </geometry>
+            <origin xyz="0.19 0.06 0.08" rpy="0 ${-pi / 2.0} ${pi / 2.0}" />
+        </collision>
+        <xacro:default_inertial mass="0.1" />
     </link>
 
     <link name="horizontal_arm_link">
@@ -47,6 +81,15 @@
             </geometry>
             <origin xyz="-0.03 -0.4 -0.06" rpy="${pi / 2.0} 0 ${pi / 2.0}" />
         </visual>
+        <collision>
+            <geometry>
+                <mesh filename="package://arduinobot_description/meshes/horizontal_arm.STL"
+                    scale="0.01 0.01 0.01"
+                />
+            </geometry>
+            <origin xyz="-0.03 -0.4 -0.06" rpy="${pi / 2.0} 0 ${pi / 2.0}" />
+        </collision>
+        <xacro:default_inertial mass="0.1" />
     </link>
 
     <link name="claw_support_link">
@@ -58,6 +101,15 @@
             </geometry>
             <origin xyz="0 -0.05 -0.15" rpy="0 0 ${pi / 2.0}" />
         </visual>
+        <collision>
+            <geometry>
+                <mesh filename="package://arduinobot_description/meshes/claw_support.STL"
+                    scale="0.01 0.01 0.01"
+                />
+            </geometry>
+            <origin xyz="0 -0.05 -0.15" rpy="0 0 ${pi / 2.0}" />
+        </collision>
+        <xacro:default_inertial mass="0.05" />
     </link>
 
     <link name="gripper_right_link">
@@ -69,6 +121,15 @@
             </geometry>
             <origin xyz="-0.1 0.5 -0.1" rpy="0 0 ${-pi / 2.0}" />
         </visual>
+        <collision>
+            <geometry>
+                <mesh filename="package://arduinobot_description/meshes/right_finger.STL"
+                    scale="0.01 0.01 0.01"
+                />
+            </geometry>
+            <origin xyz="-0.1 0.5 -0.1" rpy="0 0 ${-pi / 2.0}" />
+        </collision>
+        <xacro:default_inertial mass="0.01" />
     </link>
 
     <link name="gripper_left_link">
@@ -80,6 +141,15 @@
             </geometry>
             <origin xyz="-0.04 0.5 -0.1" rpy="0 0 ${-pi / 2.0}" />
         </visual>
+        <collision>
+            <geometry>
+                <mesh filename="package://arduinobot_description/meshes/left_finger.STL"
+                    scale="0.01 0.01 0.01"
+                />
+            </geometry>
+            <origin xyz="-0.04 0.5 -0.1" rpy="0 0 ${-pi / 2.0}" />
+        </collision>
+        <xacro:default_inertial mass="0.01" />
     </link>
 
 
@@ -92,6 +162,15 @@
             </geometry>
             <origin xyz="-0.1 0.125 0.15" rpy="${-pi / 2.0} 0 ${-pi / 2.0}" />
         </visual>
+        <collision>
+            <geometry>
+                <mesh filename="package://arduinobot_description/meshes/pi_camera.STL"
+                    scale="0.01 0.01 0.01"
+                />
+            </geometry>
+            <origin xyz="-0.1 0.125 0.15" rpy="${-pi / 2.0} 0 ${-pi / 2.0}" />
+        </collision>
+        <xacro:default_inertial mass="0.001" />
     </link>
 
 
@@ -153,5 +232,89 @@
         <child link="rgb_camera_link" />
         <origin xyz="0 0.45 0.2" rpy="0 -0.5 1.57" />
     </joint>
+
+
+    <gazebo>
+        <plugin name="joint_state_publisher" filename="libgazebo_ros_joint_state_publisher.so">
+            <jointName>
+                base__base_plate_joint,base_plate__forward_drive_arm_joint,horizontal_arm__base_plate_forward_drive_arm_joint,claw_support__gripper_right_joint,claw_support_link__gripper_left_joint</jointName>
+        </plugin>
+    </gazebo>
+
+    <!-- <gazebo reference="rgb_camera_link">
+        <sensor name="rgb_camera" type="camera">
+            <always_on>true</always_on>
+            <update_rate>30.0</update_rate>
+            <visualize>true</visualize>
+            <topic>image_raw</topic>
+            <gz_frame_id>rgb_camera_link</gz_frame_id>
+            <camera name="camera">
+                <horizontal_fov>1.21126</horizontal_fov>
+                <image>
+                    <width>2304</width>
+                    <height>1296</height>
+                    <format>R8G8B8</format>
+                </image>
+                <distortion>
+                    <k1>0.0</k1>
+                    <k2>0.0</k2>
+                    <k3>0.0</k3>
+                    <p1>0.0</p1>
+                    <p2>0.0</p2>
+                    <center>0.5 0.5</center>
+                </distortion>
+            </camera>
+
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <imageTopicName>image_raw</imageTopicName>
+                <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                <gz_frame_id>rgb_camera_link</gz_frame_id>
+                <frameName>rgb_camera_link</frameName>
+            </plugin>
+
+        </sensor>
+    </gazebo> -->
+
+    <!-- camera -->
+  <gazebo reference="rgb_camera_link">
+    <sensor type="camera" name="camera1">
+      <update_rate>30.0</update_rate>
+      <camera name="camera1">
+        <horizontal_fov>1.3962634</horizontal_fov>
+        <image>
+          <width>800</width>
+          <height>800</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>camera1</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <gz_frame_id>/rgb_camera_link</gz_frame_id>
+        <frameName>rgb_camera_link</frameName>
+        <hackBaseline>0.07</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
 
 </robot>
