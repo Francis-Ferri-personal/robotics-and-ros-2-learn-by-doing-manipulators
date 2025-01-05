@@ -33,11 +33,16 @@ def generate_launch_description():
     )
 
     ros_distro = os.environ["ROS_DISTRO"]
+    is_ignition = "True" if ros_distro == "humble" else "False"
     # This is only if you use ROS2 JAZZY
     physics_engine = "" if ros_distro == "humble" else "--physics-engine gz-physics-bullet-featherstone-plugin"
         
 
-    robot_description = ParameterValue(Command(["xacro ", LaunchConfiguration("model")]))
+    robot_description = ParameterValue(Command(["xacro ", 
+                                                LaunchConfiguration("model"),
+                                                " is_ignition:=",
+                                                is_ignition
+                                                ]), value_type=str)
 
     robot_state_publisher = Node(
         package="robot_state_publisher",

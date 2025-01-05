@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ardduinobot">
+    <ros2_control type="system" name="RobotSystem">
+        <!-- Depending on your version you have to use a different plugin -->
+        <xacro:if value="$(arg is_ignition)">
+            <hardware>
+                <plugin>ign_ros2_control/IgnitionSystem</plugin>
+            </hardware>
+        </xacro:if>
+        <xacro:unless value="$(arg is_ignition)"> 
+            <hardware>
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            </hardware>
+        </xacro:unless>
+
+        <joint name="base__base_plate_joint">
+            <!-- Send commands to actuators -->
+            <command_interface name="position">
+                <param name="min">${-pi / 2.0}</param>
+                <param name="max">${pi / 2.0}</param>
+            </command_interface>
+
+            <!-- Read state of the hardware -->
+            <state_interface name="position"/>
+        </joint>
+
+        <joint name="base_plate__forward_drive_arm_joint">
+            <!-- Send commands to actuators -->
+            <command_interface name="position">
+                <param name="min">${-pi / 2.0}</param>
+                <param name="max">${pi / 2.0}</param>
+            </command_interface>
+
+            <!-- Read state of the hardware -->
+            <state_interface name="position"/>
+        </joint>
+
+        <joint name="horizontal_arm__base_plate_forward_drive_arm_joint">
+            <!-- Send commands to actuators -->
+            <command_interface name="position">
+                <param name="min">${-pi / 2.0}</param>
+                <param name="max">${pi / 2.0}</param>
+            </command_interface>
+
+            <!-- Read state of the hardware -->
+            <state_interface name="position"/>
+        </joint>
+
+        <joint name="claw_support__gripper_right_joint">
+            <!-- Send commands to actuators -->
+            <command_interface name="position">
+                <param name="min">${-pi / 2.0}</param>
+                <param name="max">0.0</param>
+            </command_interface>
+
+            <!-- Read state of the hardware -->
+            <state_interface name="position"/>
+        </joint>
+
+        <joint name="claw_support_link__gripper_left_joint">
+            <param name="mimic">claw_support__gripper_right_joint</param>
+            <param name="multiplier">-1</param>
+        </joint>
+    </ros2_control>
+</robot>

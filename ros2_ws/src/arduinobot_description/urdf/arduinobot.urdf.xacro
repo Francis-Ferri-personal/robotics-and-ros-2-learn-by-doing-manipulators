@@ -1,5 +1,11 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="ardduinobot">
+    <!-- For use plugin in a specific ROS2 version -->
+    <xacro:arg name="is_ignition" default="true" />
+
+    <xacro:include filename="$(find arduinobot_description)/urdf/arduinobot_gazebo.xacro" />
+    <xacro:include filename="$(find arduinobot_description)/urdf/arduinobot_ros2_control.xacro" />
+    <xacro:include filename="$(find arduinobot_description)/urdf/material.xacro" />
 
     <xacro:property name="effort" value="30.0" />
     <xacro:property name="velocity" value="10.0" />
@@ -23,6 +29,7 @@
                 <mesh filename="package://arduinobot_description/meshes/basement.STL"
                     scale="0.01 0.01 0.01" />
             </geometry>
+            <material name="blue" />
         </visual>
         <collision>
             <origin xyz="-0.5 -0.5 0" rpy="0 0 0" />
@@ -41,6 +48,7 @@
                 <mesh filename="package://arduinobot_description/meshes/base_plate.STL"
                     scale="0.01 0.01 0.01" />
             </geometry>
+            <material name="red" />
         </visual>
         <collision>
             <origin xyz="-0.39 -0.39 -0.56" rpy="0 0 0" />
@@ -59,7 +67,8 @@
                     scale="0.01 0.01 0.01"
                 />
             </geometry>
-            <origin xyz="0.19 0.06 0.08" rpy="0 ${-pi / 2.0} ${pi / 2.0}" />
+            <origin xyz="0.19 0.06 -0.08" rpy="0 ${-pi / 2.0} ${pi / 2.0}" />
+            <material name="green" />
         </visual>
         <collision>
             <geometry>
@@ -67,7 +76,7 @@
                     scale="0.01 0.01 0.01"
                 />
             </geometry>
-            <origin xyz="0.19 0.06 0.08" rpy="0 ${-pi / 2.0} ${pi / 2.0}" />
+            <origin xyz="0.19 0.06 -0.08" rpy="0 ${-pi / 2.0} ${pi / 2.0}" />
         </collision>
         <xacro:default_inertial mass="0.1" />
     </link>
@@ -80,6 +89,7 @@
                 />
             </geometry>
             <origin xyz="-0.03 -0.4 -0.06" rpy="${pi / 2.0} 0 ${pi / 2.0}" />
+            <material name="orange" />
         </visual>
         <collision>
             <geometry>
@@ -100,6 +110,7 @@
                 />
             </geometry>
             <origin xyz="0 -0.05 -0.15" rpy="0 0 ${pi / 2.0}" />
+            <material name="purple" />
         </visual>
         <collision>
             <geometry>
@@ -120,6 +131,7 @@
                 />
             </geometry>
             <origin xyz="-0.1 0.5 -0.1" rpy="0 0 ${-pi / 2.0}" />
+            <material name="cyan" />
         </visual>
         <collision>
             <geometry>
@@ -140,6 +152,7 @@
                 />
             </geometry>
             <origin xyz="-0.04 0.5 -0.1" rpy="0 0 ${-pi / 2.0}" />
+            <material name="cyan" />
         </visual>
         <collision>
             <geometry>
@@ -161,6 +174,7 @@
                 />
             </geometry>
             <origin xyz="-0.1 0.125 0.15" rpy="${-pi / 2.0} 0 ${-pi / 2.0}" />
+            <material name="yellow" />
         </visual>
         <collision>
             <geometry>
@@ -180,6 +194,7 @@
         <origin xyz="0 0 0" rpy="0 0 0" />
     </joint>
 
+    <!-- Joint 1 -->
     <joint name="base__base_plate_joint" type="revolute">
         <parent link="base_link" />
         <child link="base_plate_link" />
@@ -188,6 +203,7 @@
         <origin xyz="0 0 0.307" rpy="0 0 0" />
     </joint>
 
+    <!-- Joint 2 -->
     <joint name="base_plate__forward_drive_arm_joint" type="revolute">
         <parent link="base_plate_link" />
         <child link="forward_drive_arm_link" />
@@ -196,6 +212,7 @@
         <origin xyz="-0.02 0 0.35" rpy="0 0 0" />
     </joint>
 
+    <!-- Joint 3 -->
     <joint name="horizontal_arm__base_plate_forward_drive_arm_joint" type="revolute">
         <parent link="forward_drive_arm_link" />
         <child link="horizontal_arm_link" />
@@ -210,6 +227,7 @@
         <origin xyz="0 0.82 0" rpy="0 0 0" />
     </joint>
 
+    <!-- Joint 4 -->
     <joint name="claw_support__gripper_right_joint" type="revolute">
         <parent link="claw_support_link" />
         <child link="gripper_right_link" />
@@ -218,6 +236,7 @@
         <origin xyz="-0.04 0.13 -0.1" rpy="0 0 0" />
     </joint>
 
+    <!-- Joint 5 -->
     <joint name="claw_support_link__gripper_left_joint" type="revolute">
         <parent link="claw_support_link" />
         <child link="gripper_left_link" />
@@ -276,45 +295,45 @@
     </gazebo> -->
 
     <!-- camera -->
-  <gazebo reference="rgb_camera_link">
-    <sensor type="camera" name="camera1">
-      <update_rate>30.0</update_rate>
-      <camera name="camera1">
-        <horizontal_fov>1.3962634</horizontal_fov>
-        <image>
-          <width>800</width>
-          <height>800</height>
-          <format>R8G8B8</format>
-        </image>
-        <clip>
-          <near>0.02</near>
-          <far>300</far>
-        </clip>
-        <noise>
-          <type>gaussian</type>
-          <!-- Noise is sampled independently per pixel on each frame.
+    <gazebo reference="rgb_camera_link">
+        <sensor type="camera" name="camera1">
+            <update_rate>30.0</update_rate>
+            <camera name="camera1">
+                <horizontal_fov>1.3962634</horizontal_fov>
+                <image>
+                    <width>800</width>
+                    <height>800</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.02</near>
+                    <far>300</far>
+                </clip>
+                <noise>
+                    <type>gaussian</type>
+                    <!-- Noise is sampled independently per pixel on each frame.
                That pixel's noise value is added to each of its color
                channels, which at that point lie in the range [0,1]. -->
-          <mean>0.0</mean>
-          <stddev>0.007</stddev>
-        </noise>
-      </camera>
-      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
-        <alwaysOn>true</alwaysOn>
-        <updateRate>0.0</updateRate>
-        <cameraName>camera1</cameraName>
-        <imageTopicName>image_raw</imageTopicName>
-        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
-        <gz_frame_id>/rgb_camera_link</gz_frame_id>
-        <frameName>rgb_camera_link</frameName>
-        <hackBaseline>0.07</hackBaseline>
-        <distortionK1>0.0</distortionK1>
-        <distortionK2>0.0</distortionK2>
-        <distortionK3>0.0</distortionK3>
-        <distortionT1>0.0</distortionT1>
-        <distortionT2>0.0</distortionT2>
-      </plugin>
-    </sensor>
-  </gazebo>
+                    <mean>0.0</mean>
+                    <stddev>0.007</stddev>
+                </noise>
+            </camera>
+            <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                <alwaysOn>true</alwaysOn>
+                <updateRate>0.0</updateRate>
+                <cameraName>camera1</cameraName>
+                <imageTopicName>image_raw</imageTopicName>
+                <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                <gz_frame_id>/rgb_camera_link</gz_frame_id>
+                <frameName>rgb_camera_link</frameName>
+                <hackBaseline>0.07</hackBaseline>
+                <distortionK1>0.0</distortionK1>
+                <distortionK2>0.0</distortionK2>
+                <distortionK3>0.0</distortionK3>
+                <distortionT1>0.0</distortionT1>
+                <distortionT2>0.0</distortionT2>
+            </plugin>
+        </sensor>
+    </gazebo>
 
 </robot>

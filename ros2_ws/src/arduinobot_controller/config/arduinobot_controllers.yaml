@@ -1,0 +1,51 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 10
+    
+    arm_controller:
+      type: joint_trajectory_controller/JointTrajectoryController
+    
+    gripper_controller:
+      # This is for specify the goal to the gripper
+      # type: forward_command_controller/ForwardCommandController
+      # This is for full trajectory 
+      type: joint_trajectory_controller/JointTrajectoryController
+    
+    # Publish the current state of the joints of the robot to a topic
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+
+arm_controller:
+  ros__parameters:
+    joints:
+      - base__base_plate_joint
+      - base_plate__forward_drive_arm_joint
+      - horizontal_arm__base_plate_forward_drive_arm_joint
+      
+    command_interfaces:
+      - position
+
+    state_interfaces:
+      - position
+
+  #  The real motors will not be able to provide a feedback about the current possition
+    open_loop_control: true
+    allow_integration_in_goal_trajectories: true
+
+gripper_controller:
+  ros__parameters:
+    joints:
+      - claw_support__gripper_right_joint
+
+    # This was only use for the forward controller
+    # interface_name: position
+    command_interfaces:
+      - position
+    
+    state_interfaces:
+      - position
+
+  #  The real motors will not be able to provide a feedback about the current possition
+    open_loop_control: true
+    allow_integration_in_goal_trajectories: true
